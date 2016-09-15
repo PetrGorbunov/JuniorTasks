@@ -1,8 +1,25 @@
 trigger InsertNewProductTrigger on Product__c (before insert) {
     
-    for (Product__c prod : Trigger.new) {        
+    /*List<Product__c> products = Trigger.new;
+    System.debug('From Trig Product size=' + products.size());*/
+    /*Integer i = 0;*/
+    
+
+    map<Id,Store__c> storeMap = new  map<Id,Store__c>([Select Id, Name From Store__c]); 
+
+    for (Product__c prod : Trigger.new) {
+        /*storeMap.get(prod.Store__c).Name*/
+        System.debug('From Trig Product name=' + prod.Name);
+        if (prod.Enter_date__c == null) {
+            prod.addError('the record with name =' + prod.Name + ' did not insert becouse Enter_date is NULL');
+            
+            /*System.debug('!!!!!-' + Trigger.new.get(2));*/
+            continue;
+        }         
         Store__c store = StoreSupport.getStore(prod.Enter_date__c);
-        prod.Store__c = store.id;  
+        prod.Store__c = store.id;
+        System.debug('From prod trig id=' + prod.Store__c);
+        
     }
    
 }
