@@ -2,7 +2,7 @@ trigger InsertNewProductTrigger on Product__c (before insert) {
     
     for (Product__c prod : Trigger.new) {
         System.debug('products.Name form trig = ' + prod.Name);
-        StoreSupport.getStore(prod.Enter_date__c);
+        /*prod.id = StoreSupport.getStore(prod.Enter_date__c).id;*/
     }
     /*Product__c[] products = Trigger.new;
     System.debug('products.size form trig = ' + products.size());

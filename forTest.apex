@@ -22,10 +22,25 @@ p1.Name = 'qqqqqq';
 p1.Name__c = 'wwwww';
 p1.Enter_date__c = Date.today() + 1;
 p1.Store__c = st_cur.id;
+
 products.add(p1);
-insert p1;
+/*insert p1;*/
 
 System.debug('products.size()=' + products.size());
+
+Contacts__c contact = new Contacts__c();
+contact = [SELECT id FROM Contacts__c WHERE Name = 'Contact1' LIMIT 1];
+/*contact.Name = 'Contact1';
+insert contact;*/
+
+
+raw_material__c material = new raw_material__c();
+material.Name = 'Material1';
+material.Enter_date__c = Date.today();
+material.Store__c = st_cur.id;
+material.Contacts__c = contact.id;
+material.Name__c = 'MatName__C_EXAMPLE';
+insert material;
 
 /*String days;*/
 /*ReportPeriodTime__c days = [SELECT Days__c FROM ReportPeriodTime__c WHERE Name = 'MainPeriod' ];
