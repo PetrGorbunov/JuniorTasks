@@ -7,6 +7,7 @@ trigger InsertNewMaterialTrigger on raw_material__c (before insert) {
         Store__c store = new Store__c();
         store = StoreSupport.getStore(material.Enter_date__c);
         System.debug('store.id from trigger material =' + store.id);
+        material.Store__c = store.id; 
     }
 
 }
