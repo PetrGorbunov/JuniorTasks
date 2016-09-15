@@ -1,0 +1,14 @@
+public class StoreSupport {
+
+	public static void getStore(Date currentDate) {
+	   List<Store__c> stores = [SELECT Id 
+                                FROM Store__c 
+                                WHERE Start_period__c <= :currentDate AND
+                               		  End_period__c >= :currentDate];
+        
+        System.debug('stores from class = ' + stores.size());
+           
+        
+	}
+    
+}
