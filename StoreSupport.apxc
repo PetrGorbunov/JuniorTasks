@@ -1,27 +1,26 @@
 public class StoreSupport {
 
-	public static Store__c getStore(Date currentDate) {
-	   List<Store__c> stores = [SELECT Id 
+    public static Store__c getStore(Date currentDate) {
+       List<Store__c> stores = [SELECT Id 
                                 FROM Store__c 
                                 WHERE Start_period__c <= :currentDate AND
-                               		  End_period__c >= :currentDate];
+                                      End_period__c >= :currentDate];
         if (stores.size() == 0) {
-            System.debug('Form SS: stores is null');
-            ReportPeriodTime__c reportPeriod = ReportPeriodTime__c.getInstance('MainPeriod');
-			System.debug('Form SS: reportPeriod.Days__c = ' + reportPeriod.Days__c);
+            
+            ReportPeriodTime__c reportPeriod = ReportPeriodTime__c.getInstance('MainPeriod');           
             Store__c newStore = new Store__c();
             
             newStore.Name = String.valueOf(System.currentTimeMillis());
             newStore.End_period__c = currentDate + Integer.valueOf(reportPeriod.Days__c);
             newStore.Start_period__c = currentDate;
             insert newStore;
-            System.debug('Form SS: newStore.id=' + newStore.id);
+            
             return newStore;
         }
-        System.debug('stores from class = ' + stores.size());
+        
         return stores.get(0);
            
         
-	}
+    }
     
 }
