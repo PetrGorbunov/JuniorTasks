@@ -1,0 +1,53 @@
+<apex:page controller="ShopController" sidebar="false" showheader="false" >
+
+  <apex:pageBlock title="Product list" >
+      <apex:form >
+          <apex:pageBlockSection >
+              <apex:pageBlockTable value="{!products}" var="item" >
+                  
+                  <apex:column >
+                      <apex:facet name="header">
+                          Image
+                      </apex:facet>
+                      <apex:variable var="imageVar" value="{!item.Image__c}"/>
+                      <apex:image url="{!URLFOR($Resource.ImageProduct, imageVar)}" width="50" height="50"/>
+                  </apex:column>
+                                
+                  <apex:column >
+                      <apex:facet name="header">
+                          Name
+                      </apex:facet>
+                      <apex:outputField value="{!item.Name}"  />
+                  </apex:column>
+                  
+                  <apex:column >
+                      <apex:facet name="header">
+                          Title
+                      </apex:facet>
+                      <apex:outputField value="{!item.Title__c}"  />
+                  </apex:column>
+                  
+                  <apex:column >
+                      <apex:facet name="header">
+                          Description
+                      </apex:facet>
+                      <apex:outputField value="{!item.Description__c}"  />
+                  </apex:column>
+                  
+                  <apex:column >
+                      <apex:facet name="header">
+                          Cost
+                      </apex:facet>
+                      <apex:outputField value="{!item.Cost__c}"  />
+                  </apex:column>
+                  
+                  <apex:column >
+                      <apex:commandButton value="Buy"/>
+                  </apex:column>
+                               
+              </apex:pageBlockTable>
+          </apex:pageBlockSection>
+      </apex:form>
+  </apex:pageBlock>
+  
+</apex:page>

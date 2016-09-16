@@ -1,0 +1,13 @@
+public class ShopController {
+    public List<Product__c> products {get; set;}
+    
+    public ShopController() {
+        products = [SELECT Name,
+                           Title__c,
+                           Description__c,
+                           Cost__c,
+                    	   Image__c
+                    FROM Product__c
+                    LIMIT 200];
+    }
+}
