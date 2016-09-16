@@ -32,27 +32,58 @@ insert material;*/
 /*--------------------------------------------------------------*/
 
 List<Product__c> products = new List<Product__c>();
-products.add(new Product__c(Name='nullDate'));
+products.add(new Product__c(Name='nullDate22'));
 for (Integer i = 1; i <= 10; i++) {
     
     Product__c prod = new Product__c();
-    prod.Name = 'ProdExample21';
-    prod.Enter_date__c = Date.newInstance(2000, 6, i);
+    prod.Name = 'ProdExample22';
+    prod.Enter_date__c = Date.newInstance(2001, 1, i);
     products.add(prod);
     
 }
-/*products.add(new Product__c(Name='nullDate2'));*/
+products.add(new Product__c(Name='nullDate23'));
 insert products;
 
 List<Product__c> checkProducts = new List<Product__c>();
 checkProducts = [SELECT id, Name, Enter_date__c
                  FROM Product__c
-                 WHERE Name = 'ProdExample21' 
+                 WHERE Name = 'ProdExample22' OR
+                 	   Name = 'nullDate22' OR
+                       Name = 'nullDate23'
                 ];
 
 
 for (Product__c p : checkProducts) {
     System.debug(p.Name + ' ' + p.Enter_date__c);
+}
+
+
+
+List<raw_material__c> matireals = new List<raw_material__c>();
+matireals.add(new raw_material__c(Name='nullDate33', Name__c='111'));
+for (Integer i = 1; i <= 10; i++) {
+    
+    raw_material__c mat = new raw_material__c();
+    mat.Name = 'MatExample33';
+    mat.Enter_date__c = Date.newInstance(2001, 2, i);
+    mat.Name__c = 'MatName__C_EXAMPLE';
+    matireals.add(mat);
+    
+}
+matireals.add(new raw_material__c(Name='nullDate44', Name__c='111'));
+insert matireals;
+
+List<raw_material__c> checkMat = new List<raw_material__c>();
+checkMat = [SELECT id, Name, Enter_date__c
+                 FROM raw_material__c
+                 WHERE Name = 'MatExample33' OR
+                 	   Name = 'nullDate33' OR
+                       Name = 'nullDate44'
+                ];
+
+
+for (raw_material__c m : checkMat) {
+    System.debug(m.Name + ' ' + m.Enter_date__c);
 }
 
 /*--------------------------------------------------------------*/
