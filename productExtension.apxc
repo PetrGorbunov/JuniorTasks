@@ -1,0 +1,28 @@
+public class productExtension {
+    
+	/*private final Product__c product;
+    
+    public productExtension (ApexPages.StandardController controller) {
+     	   this.product = (Product__c)controller.getRecord();
+    }
+    
+    public String getMess() {
+	       return 'Hello ' + product.name + ' (' + product.id + ')';
+	}*/
+    private Id productID;
+    public Product__c product {get; set;} 
+    
+    public productExtension() {
+        productID = ApexPages.currentPage().getParameters().get('Id');
+        product = [SELECT Id,
+                  		  Name,
+                   		  Amount__c,
+                   		  Title__c,
+                          Description__c,
+                   		  Image__c
+                   FROM Product__c
+                   WHERE Id = :productID
+                   LIMIT 1];
+    }
+    
+}
