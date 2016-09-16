@@ -31,7 +31,8 @@
                       <apex:facet name="header">
                           Description
                       </apex:facet>
-                      <apex:outputField value="{!item.Description__c}"  />
+                      <apex:outputField value="{!item.Description__c}">                       
+                      </apex:outputField>
                   </apex:column>
                   
                   <apex:column >
@@ -42,7 +43,8 @@
                   </apex:column>
                   
                   <apex:column >
-                      <apex:commandButton value="Buy"/>
+                      <apex:variable var="productUrl" value="/apex/BuyProduct?Id={!item.Id}"/>
+                      <apex:commandButton value="Buy" onclick="window.open('{!productUrl}')"/>
                   </apex:column>
                                
               </apex:pageBlockTable>

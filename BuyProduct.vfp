@@ -1,0 +1,25 @@
+<apex:page controller="BuyProductController">
+    <apex:pageBlock >
+        <apex:outputLink value="https:/apex/shop" id="toShop"> Shopping </apex:outputLink>
+    </apex:pageBlock>
+    <apex:form>
+        <apex:pageBlock title="CHECK OUT FOR {!product.Name}"> 
+            <apex:pageBlockSection columns="1">
+                <apex:inputField value="{!contact.E_Mail__c}" label="E-mail" />
+                <apex:inputField value="{!contact.Name}" label="Name" />
+                <apex:inputField value="{!contact.Address__c}" label="Address" />
+                <apex:inputField value="{!contact.Phone__c}" label="Phone" />
+            </apex:pageBlockSection>
+            <apex:pageBlockSection columns="1">
+                <apex:variable var="imageVar" value="{!product.Image__c}"/>                
+        		<apex:image url="{!URLFOR($Resource.ImageProduct, imageVar)}" width="400" height="400"/>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection columns="1">
+                <apex:outputField value="{!product.Title__c}"/>
+                <apex:outputField value="{!product.Description__c}"/>
+                <apex:outputField value="{!product.Cost__c}"/>
+            </apex:pageBlockSection>
+            
+        </apex:pageBlock> 
+    </apex:form>
+</apex:page>

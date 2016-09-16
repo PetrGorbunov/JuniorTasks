@@ -6,11 +6,11 @@ public class ShopController {
         /*public Integer MAX_LENGTH = 100;*/
         
         products = [SELECT Id,
-                         Name,
+                           Name,
                            Title__c,
                            Description__c,
                            Cost__c,
-                         Image__c
+                           Image__c
                     FROM Product__c
                     LIMIT 200];
         for( Product__c prod: products ) {
