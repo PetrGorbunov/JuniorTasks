@@ -1,14 +1,5 @@
 public class productExtension {
     
-  /*private final Product__c product;
-    
-    public productExtension (ApexPages.StandardController controller) {
-         this.product = (Product__c)controller.getRecord();
-    }
-    
-    public String getMess() {
-         return 'Hello ' + product.name + ' (' + product.id + ')';
-  }*/
     private Id productID;
     public Product__c product {get; set;} 
     

@@ -3,7 +3,7 @@ public class ShopController {
     public string productUrl;
     private String errorMessage;
     public ShopController() {
-        /*public Integer MAX_LENGTH = 100;*/
+        
         RecordType productRecordType = [SELECT id,
                                                Name 
                                         FROM RecordType 

@@ -1,4 +1,4 @@
-<apex:page controller="BuyOkController">
+<apex:page controller="BuyOkController" sidebar="false" showheader="false">
    <apex:pageBlock >
         <apex:outputLink value="https:/apex/shop" id="toShop"> To shopping </apex:outputLink>        
    </apex:pageBlock>

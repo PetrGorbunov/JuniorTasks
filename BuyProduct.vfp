@@ -1,17 +1,5 @@
-<apex:page controller="BuyProductController">
-    <script>
-        function myTest() {
-            var pageName;
-            pageName = callBuyProduct(); 
-            pageName = '/apex/' + pageName;
-            window.open(pageName, '_self');
-           
-            
-        }
-    </script>
-    <apex:pageMessages id="message"  />
-    
-    
+<apex:page controller="BuyProductController" sidebar="false" showheader="false">
+    <apex:pageMessages id="message"  />  
     <apex:pageBlock >
         <apex:outputLink value="https:/apex/shop" id="toShop"> Shopping </apex:outputLink>
     </apex:pageBlock>
@@ -38,9 +26,7 @@
                 <apex:outputField value="{!product.Cost__c}"/>
             </apex:pageBlockSection>
             
-            <apex:pageBlockButtons >                
-                <!-- <apex:commandButton value="Buy" onclick="myTest()" reRender="message" />
-                <apex:actionFunction action="{!buyProduct}" name="callBuyProduct" /> -->
+            <apex:pageBlockButtons >
                 <apex:commandButton value="Buy" action="{!buyProduct}" />
             </apex:pageBlockButtons>
         </apex:pageBlock> 

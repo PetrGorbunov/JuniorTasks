@@ -1,7 +1,8 @@
-<apex:page controller="productExtension">  
+<apex:page controller="productExtension" sidebar="false" showheader="false">  
     <apex:pageBlock >
-        <apex:outputLink value="https:/apex/shop" id="toShop"> To shopping </apex:outputLink>
-        <apex:outputLink value="https://www.salesforce.com" id="toBuy"> Buy </apex:outputLink>
+        <apex:outputLink value="/apex/shop" id="toShop"> To shopping </apex:outputLink>
+        <apex:variable var="productUrl" value="/apex/BuyProduct?Id={!product.Id}"/>
+        <apex:outputLink value="{!productUrl}" id="toBuy"> Buy </apex:outputLink>
     </apex:pageBlock>
     <apex:pageBlock title="{!product.Name}">
         <apex:outputField value="{!product.Amount__c}" label="Amount"/>
