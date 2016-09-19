@@ -1,4 +1,14 @@
 <apex:page controller="BuyProductController">
+    <script>
+        function myTest() {
+            var pageName;
+            pageName = callBuyProduct(); 
+            pageName = '/apex/' + pageName;
+            window.open(pageName, '_self');
+           
+            
+        }
+    </script>
     <apex:pageMessages id="message"  />
     
     
@@ -28,8 +38,10 @@
                 <apex:outputField value="{!product.Cost__c}"/>
             </apex:pageBlockSection>
             
-            <apex:pageBlockButtons >
-                <apex:commandButton value="Buy" action="{!buyProduct}" reRender="message" />
+            <apex:pageBlockButtons >                
+                <!-- <apex:commandButton value="Buy" onclick="myTest()" reRender="message" />
+                <apex:actionFunction action="{!buyProduct}" name="callBuyProduct" /> -->
+                <apex:commandButton value="Buy" action="{!buyProduct}" />
             </apex:pageBlockButtons>
         </apex:pageBlock> 
     </apex:form>
