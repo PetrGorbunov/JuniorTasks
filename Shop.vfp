@@ -1,5 +1,5 @@
 <apex:page controller="ShopController" sidebar="false" showheader="false" >
-
+  <apex:pageMessages id="message"  />
   <apex:pageBlock title="Product list" >
       <apex:form >
           <apex:pageBlockSection >

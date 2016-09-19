@@ -1,7 +1,7 @@
 public class ShopController {
     public List<Product__c> products {get; set;}
     public string productUrl;
-    
+    private String errorMessage;
     public ShopController() {
         /*public Integer MAX_LENGTH = 100;*/
         RecordType productRecordType = [SELECT id,
@@ -25,5 +25,11 @@ public class ShopController {
                 prod.Description__c = prod.Description__c.substring(1, 100) + '...<a href="' + productUrl + '">more details</a>';
             }
         }
+        
+        errorMessage = ApexPages.currentPage().getParameters().get('errorMessage');
+        if (errorMessage != null) {
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, errorMessage)); 
+        }
+        
     }
 }

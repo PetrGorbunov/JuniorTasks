@@ -1,8 +1,10 @@
-<apex:page >
+<apex:page controller="BuyOkController">
    <apex:pageBlock >
         <apex:outputLink value="https:/apex/shop" id="toShop"> To shopping </apex:outputLink>        
    </apex:pageBlock>
-  <h1>Congratulations</h1>
-  This is your new Page
- 
+   <apex:pageBlock >
+       <apex:outputText value="Congratulate, {0} was bought." >
+           <apex:param value="{!product.Name}"/> 
+       </apex:outputText>
+   </apex:pageBlock>
 </apex:page>

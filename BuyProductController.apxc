@@ -26,19 +26,20 @@ public class BuyProductController {
     
     public PageReference buyProduct() {
         PageReference ref;
+
         if (contact.E_Mail__c != contactFromBase.E_Mail__c && contact.E_Mail__c != null) {
             if (contact.Name == null) {
                 ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'Enter name!')); 
             } else {
-              insert contact;                
+              insert contact; 
             }
         } else if (contact.Name != contactFromBase.Name) {
             contactFromBase.Name = contact.Name;
             update contactFromBase;
         }
-        
+       
         if (product.Amount__c < 1) {
-            ref = new PageReference('/apex/Shop' + '?errorMessage=' + 'Amount < 1' + '&name=' + product.Name );
+            ref = new PageReference('/apex/Shop' + '?errorMessage=' + 'Amount ' + product.Name + '  < 1' );
             ref.setRedirect(true);
             return ref;
         }
@@ -55,7 +56,7 @@ public class BuyProductController {
         ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,productRecordType.Name + productRecordType.id)); 
         newProduct.RecordTypeId = productRecordType.Id;
         insert newProduct;
-        ref = new PageReference('/apex/BuyOk' + '?ProductName=' + product.Name + '&ContactName=' + contact.Name + '&email=' + contact.E_Mail__c);
+        ref = new PageReference('/apex/BuyOk' + '?ProductId=' + product.Id );
         ref.setRedirect(true);
         return ref;
         /*PageReference pageRef = new PageReference('http://www.google.com');

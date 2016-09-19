@@ -1,3 +1,13 @@
 public class BuyOkController {
 
+    private Id productId;
+    public Product__c product {get; set;} 
+    
+    public BuyOkController() {
+        productId = ApexPages.currentPage().getParameters().get('ProductId');
+        product = [SELECT Name
+                   FROM Product__c
+                   WHERE Id = :productId
+                   LIMIT 1];
+    }
 }
