@@ -1,20 +1,94 @@
 public class BuyProductController {
-	private Id productID;
+  private Id productID;
     
     public Product__c product {get; set;} 
-    public Contacts__c contact {get; set;} 
+    public Contacts__c contact { 
+        get { if (contact == null) 
+                    contact = new Contacts__c ();
+              return contact;
+            }
+        set;
+    }
+    private Contacts__c contactFromBase {get; set;}
     public BuyProductController() {
         productID = ApexPages.currentPage().getParameters().get('Id');
         product = [SELECT Id,
-                  		  Name,
-                   		  Amount__c,
-                   		  Title__c,
+                        Name,
+                        Amount__c,
+                        Title__c,
                           Description__c,
-                   		  Image__c,
-                   		  Cost__c
+                        Image__c,
+                        Cost__c
                    FROM Product__c
                    WHERE Id = :productID
                    LIMIT 1]; 
+    }
+    
+    public void buyProduct() {
+        
+        if (contact.E_Mail__c != contactFromBase.E_Mail__c && contact.E_Mail__c != null) {
+            if (contact.Name == null) {
+                ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'Enter name!')); 
+            } else {
+              insert contact;                
+            }
+        } else if (contact.Name != contactFromBase.Name) {
+            contactFromBase.Name = contact.Name;
+            update contactFromBase;
+        }
+        
+        product.Amount__c -= 1; 
+        Product__c newProduct = new Product__c();
+        newProduct = product.clone(false, true, false, false);
+        newProduct.Amount__c = 1;
+        RecordType productRecordType = [SELECT id,
+                                             Name 
+                                        FROM RecordType 
+                                        WHERE SobjectType='Product__c' AND 
+                                              Name='Sold' 
+                                        LIMIT 1];
+        ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,productRecordType.Name + productRecordType.id)); 
+        newProduct.RecordTypeId = productRecordType.Id;
+        insert newProduct;
+        
+        /*if (contact.E_Mail__c == null) {        
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'Clicked buy')); 
+        } else {
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, contact.E_Mail__c));
+        }*/   
+        
+        
+    }
+    
+    public void contactCheck() {        
+        /*ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'From support email'));*/
+        contactFromBase = new Contacts__c();
+        /*if (contact.E_Mail__c != null) {*/
+        try {
+        contactFromBase = [SELECT Id,
+                                  E_Mail__c,
+                                Name,
+                                  Address__c,
+                                  Phone__c
+                           FROM Contacts__c
+                           WHERE E_Mail__c = :contact.E_Mail__c AND
+                               E_Mail__c != NULL
+                           LIMIT 1];
+        } catch(Exception e) {
+          ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'I need new client'));   
+            contact.Name = '';
+            contact.Address__c = '';
+            contact.Phone__c = '';
+            return;
+        }
+        
+        
+        contact.Name = contactFromBase.Name;  
+        contact.Address__c = contactFromBase.Address__c; 
+        contact.Phone__c = contactFromBase.Phone__c; 
+        ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'client in db = ' + contactFromBase.Name + contact.Name ));
+        
+    
     }
     
 }
