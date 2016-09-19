@@ -4,7 +4,12 @@ public class ShopController {
     
     public ShopController() {
         /*public Integer MAX_LENGTH = 100;*/
-        
+        RecordType productRecordType = [SELECT id,
+                                               Name 
+                                        FROM RecordType 
+                                        WHERE SobjectType='Product__c' AND 
+                                              Name='Sold' 
+                                        LIMIT 1];
         products = [SELECT Id,
                            Name,
                            Title__c,
@@ -12,6 +17,7 @@ public class ShopController {
                            Cost__c,
                            Image__c
                     FROM Product__c
+                    WHERE RecordTypeId != :productRecordType.Id
                     LIMIT 200];
         for( Product__c prod: products ) {
             if (prod.Description__c.length() > 100) {
