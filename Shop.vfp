@@ -1,55 +1,58 @@
 <apex:page controller="ShopController" sidebar="false" showheader="false" >
-  <apex:pageMessages id="message"  />
-  <apex:pageBlock title="Product list" >
-      <apex:form >
-          <apex:pageBlockSection >
-              <apex:pageBlockTable value="{!products}" var="item" >
-                  
-                  <apex:column >
-                      <apex:facet name="header">
-                          Image
-                      </apex:facet>
-                      <apex:variable var="imageVar" value="{!item.Image__c}"/>
-                      <apex:image url="{!URLFOR($Resource.ImageProduct, imageVar)}" width="50" height="50"/>
-                  </apex:column>
-                                
-                  <apex:column >
-                      <apex:facet name="header">
-                          Name
-                      </apex:facet>
-                      <apex:outputField value="{!item.Name}"  />
-                  </apex:column>
-                  
-                  <apex:column >
-                      <apex:facet name="header">
-                          Title
-                      </apex:facet>
-                      <apex:outputField value="{!item.Title__c}"  />
-                  </apex:column>
-                  
-                  <apex:column >
-                      <apex:facet name="header">
-                          Description
-                      </apex:facet>
-                      <apex:outputField value="{!item.Description__c}">                       
-                      </apex:outputField>
-                  </apex:column>
-                  
-                  <apex:column >
-                      <apex:facet name="header">
-                          Cost
-                      </apex:facet>
-                      <apex:outputField value="{!item.Cost__c}"  />
-                  </apex:column>
-                  
-                  <apex:column >
-                      <apex:variable var="productUrl" value="/apex/BuyProduct?Id={!item.Id}"/>
-                      <apex:commandButton value="Buy" onclick="window.open('{!productUrl}')"/>
-                  </apex:column>
-                               
-              </apex:pageBlockTable>
-          </apex:pageBlockSection>
-      </apex:form>
-  </apex:pageBlock>
-  
+  <apex:composition template="TemplateShop">
+      <apex:define name="body">
+          <apex:pageMessages id="message"  />
+          <apex:pageBlock title="Product list" >
+              <apex:form >
+                  <apex:pageBlockSection >
+                      <apex:pageBlockTable value="{!products}" var="item" >
+                          
+                          <apex:column >
+                              <apex:facet name="header">
+                                  Image
+                              </apex:facet>
+                              <apex:variable var="imageVar" value="{!item.Image__c}"/>
+                              <apex:image url="{!URLFOR($Resource.ImageProduct, imageVar)}" width="50" height="50"/>
+                          </apex:column>
+                                        
+                          <apex:column >
+                              <apex:facet name="header">
+                                  Name
+                              </apex:facet>
+                              <apex:outputField value="{!item.Name}"  />
+                          </apex:column>
+                          
+                          <apex:column >
+                              <apex:facet name="header">
+                                  Title
+                              </apex:facet>
+                              <apex:outputField value="{!item.Title__c}"  />
+                          </apex:column>
+                          
+                          <apex:column >
+                              <apex:facet name="header">
+                                  Description
+                              </apex:facet>
+                              <apex:outputField value="{!item.Description__c}">                       
+                              </apex:outputField>
+                          </apex:column>
+                          
+                          <apex:column >
+                              <apex:facet name="header">
+                                  Cost
+                              </apex:facet>
+                              <apex:outputField value="{!item.Cost__c}"  />
+                          </apex:column>
+                          
+                          <apex:column >
+                              <apex:variable var="productUrl" value="/apex/BuyProduct?Id={!item.Id}"/>
+                              <apex:commandButton value="Buy" onclick="window.open('{!productUrl}')"/>
+                          </apex:column>
+                                       
+                      </apex:pageBlockTable>
+                  </apex:pageBlockSection>
+              </apex:form>
+          </apex:pageBlock>
+      </apex:define>
+    </apex:composition>
 </apex:page>

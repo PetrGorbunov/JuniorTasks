@@ -31,5 +31,13 @@ public class ShopController {
             ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, errorMessage)); 
         }
         
+        /*-->*/
+        String userId = System.UserInfo.getUserId();
+        String userName = System.UserInfo.getUserName();
+        System.debug('User=' + userId + '-' + userName);
+        ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'User=' + userId + '-' + userName)); 
+        /*System.debug('UserId=' + System.UserInfo.getUserId()); */
+        /*--<*/
+        
     }
 }
