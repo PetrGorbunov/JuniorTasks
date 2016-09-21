@@ -13,6 +13,7 @@
                 <apex:inputField value="{!contact.Name}" label="Name" />
                 <apex:inputField value="{!contact.Address__c}" label="Address" />
                 <apex:inputField value="{!contact.Phone__c}" label="Phone" />
+                <apex:inputField value="{!discountFromPage.Discount_Code__c}" label="Promo code" />
             </apex:pageBlockSection>
             
             <apex:pageBlockSection columns="1">
