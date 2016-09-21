@@ -1,0 +1,12 @@
+<apex:page controller="TemplateShopController">
+
+    <apex:outputPanel layout="none" rendered="{!isGuest}">
+        Welcome guest! <a href="{!$Page.CommunitiesLogin}">Log in</a> | <a href="{!$Page.CommunitiesSelfReg}">Register</a>
+        </apex:outputPanel>
+        <apex:outputPanel layout="none" rendered="{!NOT(isGuest)}">
+        Welcome {!$User.FirstName} {!$User.LastName}! <a href="/secur/logout.jsp">Log out</a>
+    </apex:outputPanel>
+    <apex:insert name="header"/>
+    <apex:insert name="body"/>
+
+</apex:page>
