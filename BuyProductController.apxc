@@ -17,6 +17,9 @@ public class BuyProductController {
         set;
     }    
     private Contacts__c contactFromBase {get; set;}
+    private Discount__c autoDiscount {get; set;}
+    public Boolean isAutoDiscount {get; set;}
+    public String costResult {get; set;}
     
     public BuyProductController() {
         productID = ApexPages.currentPage().getParameters().get('Id');
@@ -32,6 +35,7 @@ public class BuyProductController {
                    LIMIT 1];
         
         checkDiscount();
+        costInit();
     }
     
     public PageReference buyProduct() {
@@ -139,11 +143,10 @@ public class BuyProductController {
         account = [SELECT Id
                    FROM Account
                    WHERE Id = :user.AccountId
-                   LIMIT 1];
+                   LIMIT 1];        
         
-        Discount__c discount = new Discount__c();
         try {
-          discount = [SELECT  Id,
+          autoDiscount = [SELECT  Id,
                                 Name,
                                 Discount_Code__c,
                                 Percentes_of__c,
@@ -151,12 +154,29 @@ public class BuyProductController {
                         FROM Discount__c
                         WHERE Account__c = :account.Id
                         LIMIT 1];    
-             System.debug('You have autodiscount=' + discount.Percentes_of__c + '-' + discount.Static_discount__c);
-             ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'You have autodiscount=' + discount.Percentes_of__c + '-' + discount.Static_discount__c)); 
+             System.debug('You have autodiscount=' + autoDiscount.Percentes_of__c + '-' + autoDiscount.Static_discount__c);
+             ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'You have autodiscount=' + autoDiscount.Percentes_of__c + '-' + autoDiscount.Static_discount__c)); 
+           isAutoDiscount = true;
         } catch(Exception e) {
             ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'You do not have autodiscount. Enter promocode'));
+            isAutoDiscount = false;
         }
         
+    }
+    
+    public void costInit() {
+        if (isAutoDiscount) {
+            Decimal costBeforeDisc;
+            autoDiscount.Percentes_of__c = (autoDiscount.Percentes_of__c == null) ? 0 : autoDiscount.Percentes_of__c;
+          autoDiscount.Static_discount__c = (autoDiscount.Static_discount__c == null) ? 0 : autoDiscount.Static_discount__c;
+            costBeforeDisc = product.Cost__c - (product.Cost__c * autoDiscount.Percentes_of__c / 100);
+          costBeforeDisc = costBeforeDisc - autoDiscount.Static_discount__c; 
+            /*costBeforeDisc = costBeforeDisc.divide(1, 2, System.RoundingMode.HALF_UP);*/
+            costBeforeDisc = costBeforeDisc.setScale(2, RoundingMode.HALF_UP);
+            costResult = 'Your primary cost: ' + String.valueOf(costBeforeDisc) + '. Cost for all: ' + String.valueOf(product.Cost__c);
+        } else {
+            costResult = 'Cost: ' + String.valueOf(product.Cost__c);
+        }
     }
     
 }

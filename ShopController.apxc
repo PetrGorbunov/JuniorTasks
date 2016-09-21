@@ -4,7 +4,7 @@ public class ShopController {
     private String errorMessage;
     public ShopController() {
         
-        RecordType productRecordType = [SELECT id,
+        /*RecordType productRecordType = [SELECT id,
                                                Name 
                                         FROM RecordType 
                                         WHERE SobjectType='Product__c' AND 
@@ -24,7 +24,8 @@ public class ShopController {
                 productUrl = '/apex/product?Id=' + prod.Id;
                 prod.Description__c = prod.Description__c.substring(1, 100) + '...<a href="' + productUrl + '">more details</a>';
             }
-        }
+        }*/
+        getProducts('');
         
         errorMessage = ApexPages.currentPage().getParameters().get('errorMessage');
         if (errorMessage != null) {
@@ -39,5 +40,38 @@ public class ShopController {
         /*System.debug('UserId=' + System.UserInfo.getUserId()); */
         /*--<*/
         
+    }
+    
+    public void searchProduct() {
+        String searchName = Apexpages.currentPage().getParameters().get('searchName');
+        /*System.debug('searchName=' + searchName);*/
+        ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'searchName=' + searchName)); 
+        getProducts(searchName);        
+    }
+    
+    private void getProducts(String searchName) {
+        String filterName = '%' + String.escapeSingleQuotes(searchName) + '%';
+        RecordType productRecordType = [SELECT id,
+                                               Name 
+                                        FROM RecordType 
+                                        WHERE SobjectType='Product__c' AND 
+                                              Name='Sold' 
+                                        LIMIT 1];
+        products = [SELECT Id,
+                           Name,
+                           Title__c,
+                           Description__c,
+                           Cost__c,
+                           Image__c
+                    FROM Product__c
+                    WHERE RecordTypeId != :productRecordType.Id AND
+                          Name LIKE :filterName
+                    LIMIT 200];
+        for( Product__c prod: products ) {
+            if (prod.Description__c.length() > 100) {
+                productUrl = '/apex/product?Id=' + prod.Id;
+                prod.Description__c = prod.Description__c.substring(1, 100) + '...<a href="' + productUrl + '">more details</a>';
+            }
+        }
     }
 }

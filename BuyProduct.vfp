@@ -1,19 +1,28 @@
 <apex:page controller="BuyProductController" sidebar="false" showheader="false">
+    <script type="text/javascript"> 
+        window.onload = function() {
+            if ('true' == "{!isAutoDiscount}") {
+                promoCodeElement.parentNode.removeChild(promoCodeElement);     
+            }
+        }
+    </script> 
     <apex:pageMessages id="message"  />  
     <apex:pageBlock >
         <apex:outputLink value="https:/apex/shop" id="toShop"> Shopping </apex:outputLink>
     </apex:pageBlock>
-    <apex:form >
-        <apex:pageBlock title="CHECK OUT FOR {!product.Name}"> 
+    <apex:form id="form" onsubmit="removeElement();" >
+        <apex:pageBlock id="block" title="CHECK OUT FOR {!product.Name}"> 
             
-            <apex:pageBlockSection columns="1" id="newContact">
+            <apex:pageBlockSection columns="1" id="newContact" >
                 <apex:inputField id="email" value="{!contact.E_Mail__c}" label="E-mail">
                     <apex:actionSupport action="{!contactCheck}" event="onchange" reRender="message,newContact" />
                 </apex:inputField> 
                 <apex:inputField value="{!contact.Name}" label="Name" />
                 <apex:inputField value="{!contact.Address__c}" label="Address" />
                 <apex:inputField value="{!contact.Phone__c}" label="Phone" />
-                <apex:inputField value="{!discountFromPage.Discount_Code__c}" label="Promo code" />
+                
+                    <apex:inputField id="promoCode" value="{!discountFromPage.Discount_Code__c}" label="Promo code"  />
+                    <script> var promoCodeElement = document.getElementById("{!$Component.promoCode}"); </script>
             </apex:pageBlockSection>
             
             <apex:pageBlockSection columns="1">
@@ -22,9 +31,9 @@
             </apex:pageBlockSection>
             
             <apex:pageBlockSection columns="1">
-                <apex:outputField value="{!product.Title__c}"/>
-                <apex:outputField value="{!product.Description__c}"/>
-                <apex:outputField value="{!product.Cost__c}"/>
+                    <div>Title: {!product.Title__c}</div>
+                    <div>Description: {!product.Description__c}</div>
+                    <div>{!costResult}</div>
             </apex:pageBlockSection>
             
             <apex:pageBlockButtons >

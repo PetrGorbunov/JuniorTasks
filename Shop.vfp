@@ -1,11 +1,24 @@
 <apex:page controller="ShopController" sidebar="false" showheader="false" >
+    
   <apex:composition template="TemplateShop">
       <apex:define name="body">
           <apex:pageMessages id="message"  />
           <apex:pageBlock title="Product list" >
               <apex:form >
+                  <script type="text/javascript">
+                      function doSearch() {
+                        searchServer(document.getElementById("partOfName").value);
+                      }
+                  </script> 
+                  <apex:actionFunction name="searchServer" action="{!searchProduct}" rerender="tableProduct,message">
+                      <apex:param name="searchName" value="" />                     
+                  </apex:actionFunction>
+                  <input type="text" id="partOfName" onkeyup="doSearch();"/>
+                  
+                          
+                  
                   <apex:pageBlockSection >
-                      <apex:pageBlockTable value="{!products}" var="item" >
+                      <apex:pageBlockTable value="{!products}" var="item" id="tableProduct" >
                           
                           <apex:column >
                               <apex:facet name="header">
