@@ -5,17 +5,17 @@ public class ShopController {
     public ShopController() {
         
         /*RecordType productRecordType = [SELECT id,
-                                               Name 
+                                             Name 
                                         FROM RecordType 
                                         WHERE SobjectType='Product__c' AND 
                                               Name='Sold' 
                                         LIMIT 1];
         products = [SELECT Id,
-                           Name,
+                         Name,
                            Title__c,
                            Description__c,
                            Cost__c,
-                           Image__c
+                         Image__c
                     FROM Product__c
                     WHERE RecordTypeId != :productRecordType.Id
                     LIMIT 200];
@@ -50,22 +50,22 @@ public class ShopController {
     }
     
     private void getProducts(String searchName) {
-        String filterName = '%' + String.escapeSingleQuotes(searchName) + '%';
-        RecordType productRecordType = [SELECT id,
-                                               Name 
+        searchName = '%' + String.escapeSingleQuotes(searchName) + '%';
+        /*RecordType productRecordType = [SELECT id,
+                                             Name 
                                         FROM RecordType 
                                         WHERE SobjectType='Product__c' AND 
                                               Name='Sold' 
-                                        LIMIT 1];
+                                        LIMIT 1];*/
         products = [SELECT Id,
-                           Name,
+                         Name,
                            Title__c,
                            Description__c,
                            Cost__c,
-                           Image__c
+                         Image__c
                     FROM Product__c
-                    WHERE RecordTypeId != :productRecordType.Id AND
-                          Name LIKE :filterName
+                    WHERE RecordTypeId NOT IN (SELECT Id FROM RecordType WHERE SobjectType='Product__c' AND Name='Sold') AND
+                          Name LIKE :searchName
                     LIMIT 200];
         for( Product__c prod: products ) {
             if (prod.Description__c.length() > 100) {

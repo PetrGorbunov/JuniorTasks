@@ -10,7 +10,7 @@
     <apex:pageBlock >
         <apex:outputLink value="https:/apex/shop" id="toShop"> Shopping </apex:outputLink>
     </apex:pageBlock>
-    <apex:form id="form" onsubmit="removeElement();" >
+    <apex:form id="form" >
         <apex:pageBlock id="block" title="CHECK OUT FOR {!product.Name}"> 
             
             <apex:pageBlockSection columns="1" id="newContact" >

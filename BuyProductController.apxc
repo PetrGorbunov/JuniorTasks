@@ -135,14 +135,14 @@ public class BuyProductController {
         Id userId = System.UserInfo.getUserId();
         Account account = new Account();
         User user = new User(); 
-        user = [SELECT Id,
+        /*user = [SELECT Id,
                        AccountId
                 FROM User
                 WHERE Id = :userId
-                LIMIT 1];
+                LIMIT 1];*/
         account = [SELECT Id
                    FROM Account
-                   WHERE Id = :user.AccountId
+                   WHERE Id IN (SELECT AccountId FROM User WHERE Id = :userId)
                    LIMIT 1];        
         
         try {
