@@ -20,11 +20,11 @@ public class ShopController {
     private void getProducts(String searchName) {
         searchName = '%' + String.escapeSingleQuotes(searchName) + '%';
         products = [SELECT Id,
-                         Name,
+                    	   Name,
                            Title__c,
                            Description__c,
                            Cost__c,
-                         Image__c
+                    	   Image__c
                     FROM Product__c
                     WHERE RecordTypeId NOT IN (SELECT Id FROM RecordType WHERE SobjectType='Product__c' AND Name='Sold') AND
                           Name LIKE :searchName

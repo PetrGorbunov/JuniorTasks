@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>BuyOkController</members>
+        <members>BuyProductController</members>
+        <members>DiscountSupport</members>
+        <members>MailSupport</members>
+        <members>ShopController</members>
+        <members>TemplateShopController</members>
+        <members>productExtension</members>
+        <name>ApexClass</name>
+    </types>
+    <types>
+        <members>BuyOk</members>
+        <members>BuyProduct</members>
+        <members>Product</members>
+        <members>Shop</members>
+        <name>ApexPage</name>
+    </types>
+    <types>
+        <members>InsertNewMaterialTrigger</members>
+        <members>InsertNewProductTrigger</members>
+        <name>ApexTrigger</name>
+    </types>
+    <types>
+        <members>ImageProduct</members>
+        <name>StaticResource</name>
+    </types>
+    <version>36.0</version>
+</Package>

@@ -1,5 +1,5 @@
 public class BuyProductController {
-  private Id productID;
+	private Id productID;
     
     public Product__c product {get; set;} 
     public Contacts__c contact { 
@@ -24,12 +24,12 @@ public class BuyProductController {
     public BuyProductController() {
         productID = ApexPages.currentPage().getParameters().get('Id');
         product = [SELECT Id,
-                        Name,
-                        Amount__c,
-                        Title__c,
+                  		  Name,
+                   		  Amount__c,
+                   		  Title__c,
                           Description__c,
-                        Image__c,
-                        Cost__c
+                   		  Image__c,
+                   		  Cost__c
                    FROM Product__c
                    WHERE Id = :productID
                    LIMIT 1];
@@ -37,7 +37,8 @@ public class BuyProductController {
         checkDiscount();        
     }
     
-    public PageReference buyProduct() {    
+    public PageReference buyProduct() {
+		
         if (!checkInputData()) {
             return null;
         }
@@ -59,19 +60,20 @@ public class BuyProductController {
         return goToNextPage(newPageUrl);
     }
     
-    public void contactCheck() {
+    public void contactCheck() {        
+
         contactFromBase = new Contacts__c();
         try {
         contactFromBase = [SELECT Id,
                                   E_Mail__c,
-                                Name,
+                           		  Name,
                                   Address__c,
                                   Phone__c
                            FROM Contacts__c
                            WHERE E_Mail__c = :contact.E_Mail__c AND
-                               E_Mail__c != NULL
+                           		 E_Mail__c != NULL
                            LIMIT 1];
-        } catch(Exception e) {          
+        } catch(Exception e) {        	
             contact.Name = '';
             contact.Address__c = '';
             contact.Phone__c = '';
@@ -99,7 +101,7 @@ public class BuyProductController {
             isAutoDiscount = true;
             autoDiscount = DiscountSupport.getMaxDiscountFromList(discounts, product.Cost__c);
             costBeforeDisc = DiscountSupport.calculateCostAfterDiscount(autoDiscount, product.Cost__c);            
-          costResult = 'Your primary cost: ' + String.valueOf(costBeforeDisc) + '. Cost for all: ' + String.valueOf(product.Cost__c);
+        	costResult = 'Your primary cost: ' + String.valueOf(costBeforeDisc) + '. Cost for all: ' + String.valueOf(product.Cost__c);
         } else {
             isAutoDiscount = false;
             costResult = 'Cost: ' + String.valueOf(product.Cost__c);
@@ -118,7 +120,7 @@ public class BuyProductController {
         newProduct.Amount__c = 1;
         
         RecordType productRecordType = [SELECT id,
-                                             Name 
+                                        	   Name 
                                         FROM RecordType 
                                         WHERE SobjectType='Product__c' AND 
                                               Name='Sold' 
@@ -144,7 +146,7 @@ public class BuyProductController {
              }
              result = true;
          } catch(Exception e) { 
-          ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'Error input data!'));   
+         	ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'Error input data!'));   
             result = false;     
          }
          return result; 

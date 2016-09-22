@@ -1,6 +1,7 @@
 <apex:page controller="BuyOkController" sidebar="false" showheader="false">
     <apex:composition template="TemplateShop">
         <apex:define name="body">
+            <apex:pageMessages id="message"  />
             <apex:pageBlock >
                 <apex:outputLink value="https:/apex/shop" id="toShop"> To shopping </apex:outputLink>        
             </apex:pageBlock>

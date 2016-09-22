@@ -46,7 +46,7 @@
                               <apex:facet name="header">
                                   Description
                               </apex:facet>
-                              <apex:outputField value="{!item.Description__c}">                       
+                              <apex:outputField value="{!item.Description__c}">                      	
                               </apex:outputField>
                           </apex:column>
                           

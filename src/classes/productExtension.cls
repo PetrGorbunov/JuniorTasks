@@ -6,11 +6,11 @@ public class productExtension {
     public productExtension() {
         productID = ApexPages.currentPage().getParameters().get('Id');
         product = [SELECT Id,
-                        Name,
-                        Amount__c,
-                        Title__c,
+                  		  Name,
+                   		  Amount__c,
+                   		  Title__c,
                           Description__c,
-                        Image__c
+                   		  Image__c
                    FROM Product__c
                    WHERE Id = :productID
                    LIMIT 1];
