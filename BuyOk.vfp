@@ -1,18 +1,22 @@
 <apex:page controller="BuyOkController" sidebar="false" showheader="false">
-   <apex:pageBlock >
-        <apex:outputLink value="https:/apex/shop" id="toShop"> To shopping </apex:outputLink>        
-   </apex:pageBlock>
-   <apex:pageBlock >
-       <apex:outputText value="Congratulate, {0} was bought. Cost = {1}." >
-           <apex:param value="{!product.Name}"/>
-           <apex:param value="{!product.Cost__c}"/>           
-       </apex:outputText>
-       <apex:outputText value="You have discount {0}%." style="{!IF((discount.Percentes_of__c == 0),'display:none', '')}">
-       	   <apex:param value="{!discount.Percentes_of__c}"/>
-       </apex:outputText>
-              <apex:outputText value="You have discount {0}$." style="{!IF((discount.Static_discount__c == 0),'display:none', '')}">
-       	   <apex:param value="{!discount.Static_discount__c}"/>
-       </apex:outputText>
-
-   </apex:pageBlock>
+    <apex:composition template="TemplateShop">
+        <apex:define name="body">
+            <apex:pageBlock >
+                <apex:outputLink value="https:/apex/shop" id="toShop"> To shopping </apex:outputLink>        
+            </apex:pageBlock>
+            
+            <apex:pageBlock >
+                <apex:outputText value="Congratulate, {0} was bought. Cost = {1}." >
+                    <apex:param value="{!product.Name}"/>
+                    <apex:param value="{!product.Cost__c}"/>           
+                </apex:outputText>
+                <apex:outputText value="You have discount {0}%." style="{!IF((discount.Percentes_of__c == 0),'display:none', '')}">
+                    <apex:param value="{!discount.Percentes_of__c}"/>
+                </apex:outputText>
+                <apex:outputText value="You have discount {0}$." style="{!IF((discount.Static_discount__c == 0),'display:none', '')}">
+                    <apex:param value="{!discount.Static_discount__c}"/>
+                </apex:outputText>                
+            </apex:pageBlock>
+        </apex:define>
+    </apex:composition>
 </apex:page>

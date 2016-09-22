@@ -1,15 +1,20 @@
-<apex:page controller="productExtension" sidebar="false" showheader="false">  
-    <apex:pageBlock >
-        <apex:outputLink value="/apex/shop" id="toShop"> To shopping </apex:outputLink>
-        <apex:variable var="productUrl" value="/apex/BuyProduct?Id={!product.Id}"/>
-        <apex:outputLink value="{!productUrl}" id="toBuy"> Buy </apex:outputLink>
-    </apex:pageBlock>
-    <apex:pageBlock title="{!product.Name}">
-        <apex:outputField value="{!product.Amount__c}" label="Amount"/>
-        <apex:outputField value="{!product.Title__c}" label="Title"/>
-        <apex:outputField value="{!product.Description__c}" label="Description"/>
-        <p>Image</p>
-        <apex:variable var="imageVar" value="{!product.Image__c}"/>
-        <apex:image url="{!URLFOR($Resource.ImageProduct, imageVar)}" width="250" height="250"/>
-    </apex:pageBlock>
+<apex:page controller="productExtension" sidebar="false" showheader="false"> 
+    <apex:composition template="TemplateShop">
+        <apex:define name="body">
+            <apex:pageBlock >
+                <apex:outputLink value="/apex/shop" id="toShop"> To shopping </apex:outputLink>                
+                |
+                <apex:variable var="productUrl" value="/apex/BuyProduct?Id={!product.Id}"/>
+                <apex:outputLink value="{!productUrl}" id="toBuy"> Buy </apex:outputLink>
+            </apex:pageBlock>
+            <apex:pageBlock title="{!product.Name}">
+                <apex:outputField value="{!product.Amount__c}" label="Amount"/>
+                <apex:outputField value="{!product.Title__c}" label="Title"/>
+                <apex:outputField value="{!product.Description__c}" label="Description"/>
+                <p>Image</p>
+                <apex:variable var="imageVar" value="{!product.Image__c}"/>
+                <apex:image url="{!URLFOR($Resource.ImageProduct, imageVar)}" width="250" height="250"/>
+            </apex:pageBlock>
+        </apex:define>
+    </apex:composition>
 </apex:page>

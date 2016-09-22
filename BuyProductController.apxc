@@ -34,57 +34,32 @@ public class BuyProductController {
                    WHERE Id = :productID
                    LIMIT 1];
         
-        checkDiscount();
-        costInit();
+        checkDiscount();        
     }
     
-    public PageReference buyProduct() {
-        PageReference ref;
-        
-        getDiscountByCode();
-        System.debug('getDiscountByCode=' + discountFromPage.Percentes_of__c);
-        
-        try {
-            if (contact.E_Mail__c != contactFromBase.E_Mail__c && contact.E_Mail__c != null) {
-                if (contact.Name == null) {
-                    ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'Enter name!')); 
-                } else {
-                    insert contact; 
-                }
-            } else if (contact.Name != contactFromBase.Name) {
-                contactFromBase.Name = contact.Name;
-                update contactFromBase;
-            }
-        } catch(Exception e) { 
-            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'Enter e-mail'));   
-            return null;     
+    public PageReference buyProduct() {    
+        if (!checkInputData()) {
+            return null;
         }
-       
-        if (product.Amount__c < 1) {
-            ref = new PageReference('/apex/Shop' + '?errorMessage=' + 'Amount ' + product.Name + '  < 1' );
-            ref.setRedirect(true);
-            return ref;
-        }
-        product.Amount__c -= 1; 
-        Product__c newProduct = new Product__c();
-        newProduct = product.clone(false, true, false, false);
-        newProduct.Amount__c = 1;
-        RecordType productRecordType = [SELECT id,
-                                             Name 
-                                        FROM RecordType 
-                                        WHERE SobjectType='Product__c' AND 
-                                              Name='Sold' 
-                                        LIMIT 1];
-        ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,productRecordType.Name + productRecordType.id)); 
-        newProduct.RecordTypeId = productRecordType.Id;
-        insert newProduct;
-        ref = new PageReference('/apex/BuyOk' + '?ProductId=' + product.Id + '&DiscountId=' + discountFromPage.Id );
-        ref.setRedirect(true);
-        return ref;
+        
+        String newPageUrl;
+        if (product.Amount__c < 1) {            
+            newPageUrl = '/apex/Shop' + '?errorMessage=' + 'Amount ' + product.Name + '  < 1';
+        } else {
+            product.Amount__c -= 1;
+            createNewSoldProduct(); 
+            if (isAutoDiscount) {
+               newPageUrl = '/apex/BuyOk' + '?ProductId=' + product.Id + '&DiscountId=' + autoDiscount.Id; 
+            } else {
+               discountFromPage = DiscountSupport.getMaxDiscountFromList(DiscountSupport.getDiscountByCode(discountFromPage.Discount_Code__c), 
+                                                                         product.Cost__c);
+               newPageUrl = '/apex/BuyOk' + '?ProductId=' + product.Id + '&DiscountId=' + discountFromPage.Id; 
+            }          
+        } 
+        return goToNextPage(newPageUrl);
     }
     
-    public void contactCheck() {        
-
+    public void contactCheck() {
         contactFromBase = new Contacts__c();
         try {
         contactFromBase = [SELECT Id,
@@ -106,77 +81,73 @@ public class BuyProductController {
         contact.Address__c = contactFromBase.Address__c; 
         contact.Phone__c = contactFromBase.Phone__c;
     }
-    
-    private void getDiscountByCode() {
-        if (discountFromPage == null) {
-            return;
-        }
-        
-        Discount__c discountFromBase = new Discount__c();
-        try {
-            discountFromBase = [SELECT Id,
-                                     Name,
-                                       Discount_Code__c,
-                                       Percentes_of__c,
-                                       Static_discount__c
-                                FROM Discount__c
-                                WHERE Discount_Code__c = :discountFromPage.Discount_Code__c
-                                LIMIT 1];
-            discountFromPage.id = discountFromBase.id;
-            discountFromPage.Percentes_of__c = (discountFromBase.Percentes_of__c == null) ? 0 : discountFromBase.Percentes_of__c;
-            discountFromPage.Static_discount__c = (discountFromBase.Static_discount__c == null) ? 0 : discountFromBase.Static_discount__c;
-        } catch(Exception e) {  
-          System.debug('Your promo code not active');
-        }
-        
-    }
-    
+     
     private void checkDiscount() {
         Id userId = System.UserInfo.getUserId();
         Account account = new Account();
         User user = new User(); 
-        /*user = [SELECT Id,
-                       AccountId
-                FROM User
-                WHERE Id = :userId
-                LIMIT 1];*/
+
         account = [SELECT Id
                    FROM Account
                    WHERE Id IN (SELECT AccountId FROM User WHERE Id = :userId)
                    LIMIT 1];        
         
-        try {
-          autoDiscount = [SELECT  Id,
-                                Name,
-                                Discount_Code__c,
-                                Percentes_of__c,
-                                Static_discount__c
-                        FROM Discount__c
-                        WHERE Account__c = :account.Id
-                        LIMIT 1];    
-             System.debug('You have autodiscount=' + autoDiscount.Percentes_of__c + '-' + autoDiscount.Static_discount__c);
-             ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'You have autodiscount=' + autoDiscount.Percentes_of__c + '-' + autoDiscount.Static_discount__c)); 
-           isAutoDiscount = true;
-        } catch(Exception e) {
-            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'You do not have autodiscount. Enter promocode'));
+        List <Discount__c> discounts = new List <Discount__c>();
+        discounts = DiscountSupport.getDiscountByAccId(account.Id);        
+        Decimal costBeforeDisc;
+        if (discounts.size() > 0) {
+            isAutoDiscount = true;
+            autoDiscount = DiscountSupport.getMaxDiscountFromList(discounts, product.Cost__c);
+            costBeforeDisc = DiscountSupport.calculateCostAfterDiscount(autoDiscount, product.Cost__c);            
+          costResult = 'Your primary cost: ' + String.valueOf(costBeforeDisc) + '. Cost for all: ' + String.valueOf(product.Cost__c);
+        } else {
             isAutoDiscount = false;
-        }
-        
+            costResult = 'Cost: ' + String.valueOf(product.Cost__c);
+        }        
+    }
+   
+    private PageReference goToNextPage(String url) {
+        PageReference ref = new PageReference(url);
+        ref.setRedirect(true);  
+        return ref;
     }
     
-    public void costInit() {
-        if (isAutoDiscount) {
-            Decimal costBeforeDisc;
-            autoDiscount.Percentes_of__c = (autoDiscount.Percentes_of__c == null) ? 0 : autoDiscount.Percentes_of__c;
-          autoDiscount.Static_discount__c = (autoDiscount.Static_discount__c == null) ? 0 : autoDiscount.Static_discount__c;
-            costBeforeDisc = product.Cost__c - (product.Cost__c * autoDiscount.Percentes_of__c / 100);
-          costBeforeDisc = costBeforeDisc - autoDiscount.Static_discount__c; 
-            /*costBeforeDisc = costBeforeDisc.divide(1, 2, System.RoundingMode.HALF_UP);*/
-            costBeforeDisc = costBeforeDisc.setScale(2, RoundingMode.HALF_UP);
-            costResult = 'Your primary cost: ' + String.valueOf(costBeforeDisc) + '. Cost for all: ' + String.valueOf(product.Cost__c);
-        } else {
-            costResult = 'Cost: ' + String.valueOf(product.Cost__c);
-        }
+    private void createNewSoldProduct() {
+        Product__c newProduct = new Product__c();
+        newProduct = product.clone(false, true, false, false);
+        newProduct.Amount__c = 1;
+        
+        RecordType productRecordType = [SELECT id,
+                                             Name 
+                                        FROM RecordType 
+                                        WHERE SobjectType='Product__c' AND 
+                                              Name='Sold' 
+                                        LIMIT 1];   
+        
+        newProduct.RecordTypeId = productRecordType.Id;
+        insert newProduct;
+    }
+    
+    private Boolean checkInputData() {
+         Boolean result;
+         try {
+             if (contact.E_Mail__c != contactFromBase.E_Mail__c && contact.E_Mail__c != null) {
+                 if (contact.Name == null) {
+                     ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'Enter name!')); 
+                     result = false;
+                 } else {
+                     insert contact;
+                 }
+             } else if (contact.Name != contactFromBase.Name) {
+                 contactFromBase.Name = contact.Name;
+                 update contactFromBase;
+             }
+             result = true;
+         } catch(Exception e) { 
+          ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'Error input data!'));   
+            result = false;     
+         }
+         return result; 
     }
     
 }

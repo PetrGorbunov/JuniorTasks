@@ -31,8 +31,7 @@ public class BuyOkController {
                         LIMIT 1];
             
             activeDiscount();
-        } catch(Exception e) {  
-         	System.debug('You do not have discounts');
+        } catch(Exception e) {
             discount.Percentes_of__c = 0;
 			discount.Static_discount__c = 0;         
         }
