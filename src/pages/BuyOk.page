@@ -2,11 +2,11 @@
     <apex:composition template="TemplateShop">
         <apex:define name="body">
             <apex:pageMessages id="message"  />
-            <apex:pageBlock >
-                <apex:outputLink value="https:/apex/shop" id="toShop"> To shopping </apex:outputLink>        
-            </apex:pageBlock>
             
-            <apex:pageBlock >
+            <apex:pageBlock title="Congratulations" >
+                <div>
+                    <apex:outputLink value="https:/apex/shop" id="toShop"> To shopping </apex:outputLink>
+                </div>
                 <apex:outputText value="Congratulate, {0} was bought. Cost = {1}." >
                     <apex:param value="{!product.Name}"/>
                     <apex:param value="{!product.Cost__c}"/>           

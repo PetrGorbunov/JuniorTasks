@@ -11,8 +11,8 @@ public class BuyOkController {
         set;}
     
     
-    public BuyOkController() {
-        ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'SPARTAAAAAAAAAAAAA!'));
+    public BuyOkController() {        
+        ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Hello')); 
         productId = ApexPages.currentPage().getParameters().get('ProductId');
         product = [SELECT Name,
                    		  Cost__c
@@ -20,8 +20,6 @@ public class BuyOkController {
                    WHERE Id = :productId
                    LIMIT 1];
         
-        
-
         try {
             discountId = ApexPages.currentPage().getParameters().get('DiscountId');
             discount = [SELECT Name,
@@ -41,7 +39,7 @@ public class BuyOkController {
 
 
         //sendEmail();
-        ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Start sendEmail')); 
+        //ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Start sendEmail')); 
         Messaging.reserveSingleEmailCapacity(2);
         Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
         
