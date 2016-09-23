@@ -27,7 +27,8 @@ public class DiscountSupport {
                                        Name,
                                        Discount_Code__c,
                                        Percentes_of__c,
-                                       Static_discount__c
+                                       Static_discount__c,
+                                       Account__c
                                FROM Discount__c
                                WHERE Account__c = :accId];    
 

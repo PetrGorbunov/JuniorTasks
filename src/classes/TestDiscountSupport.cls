@@ -1,6 +1,34 @@
 @isTest
 private class TestDiscountSupport {
 	
+	@testSetup static void setup() {
+	        // Create discounts with Discount_Code__c = :promoCode	        
+	        String promoCode = 'disc1';
+			Integer discountNumber = 10;
+			for(Integer i = 1; i <= discountNumber; i++) {
+				Discount__c discount = new Discount__c();
+				discount.Name = 'disc' + i;
+				discount.Discount_Code__c = promoCode;
+				insert discount;
+			}
+
+			// Create one discount record with Discount_Code__c = 'falsePromoCode'
+			Discount__c discount = new Discount__c();
+			discount.Name = 'disc';
+			discount.Discount_Code__c = 'falsePromoCode';
+			insert discount;
+
+			//Create account		
+			Account account = new Account(Name = 'Acc');
+			insert account;
+
+			//Create associate discount with account
+			Discount__c discWithAcc = new Discount__c();
+			discWithAcc.Name = 'discWithAcc';
+			discWithAcc.Account__c = account.Id;
+			insert discWithAcc;
+	    }
+
 	@isTest static void testGetDiscountByCodeNull() {
 		//get discounts list
 		List <Discount__c> discounts = new List <Discount__c>();
@@ -11,70 +39,38 @@ private class TestDiscountSupport {
 	}
 
 	@isTest static void testGetDiscountByTrueCode() {
-		//Creating test data
-		String promoCode = 'disc1';
-		Integer discountNumber = 10;
-		for(Integer i = 1; i <= discountNumber; i++) {
-			Discount__c discount = new Discount__c();
-			discount.Name = 'disc' + i;
-			discount.Discount_Code__c = promoCode;
-			insert discount;
-		}
-		Discount__c discount = new Discount__c();
-		discount.Name = 'disc';
-		discount.Discount_Code__c = 'falsePromoCode';
-		insert discount;
-
 		//get discounts list
+		String promoCode = 'disc1';
 		List <Discount__c> discounts =  new List <Discount__c>();
 		discounts = DiscountSupport.getDiscountByCode(promoCode);
 
 		//test condition
 		for (Discount__c d : discounts) {
 			System.assert(d.Discount_Code__c == promoCode);
-		}
-		System.assert(discounts.size() == discountNumber);
+		}		
 	}
 
 	@isTest static void testGetDiscountByFalseCode() {
-		String truePromoCode = 'true';
-		String falsePromoCode = 'false';
-
-		//Creating test data
-		Discount__c discount = new Discount__c();
-		discount.Name = 'disc';
-		discount.Discount_Code__c = truePromoCode;
-		insert discount;
-
 		//get discounts list		
 		List <Discount__c> discounts =  new List <Discount__c>();
-		discounts = DiscountSupport.getDiscountByCode(falsePromoCode);
+		discounts = DiscountSupport.getDiscountByCode('theNameDidNotCreateInSetup');
 
 		//test condition
 		System.assert(discounts.size() == 0);
 	}
 	
 	@isTest static void testGetDiscountByAccId() {
-		//Creating test data		
-		Account account = new Account(Name = 'Acc');
-		insert account;
-
-		Discount__c discWithAcc = new Discount__c();
-		discWithAcc.Name = 'discWithAcc';
-		discWithAcc.Account__c = account.Id;
-		insert discWithAcc;
-
-		Discount__c discWithoutAcc = new Discount__c();
-		discWithoutAcc.Name = 'discWithoutAcc';
-		discWithoutAcc.Account__c = null;
-		insert discWithoutAcc;
+		//get account
+		Account account = [SELECT Id
+		   				   FROM Account
+		   				   WHERE Name = 'Acc'];
 
 		//get discounts list
 		List <Discount__c> discounts =  new List <Discount__c>();
 		discounts = DiscountSupport.getDiscountByAccId(account.Id);
 
 		//test condition
-		System.assert(discounts.get(0).Id == discWithAcc.Id);
+		System.assert(discounts.get(0).Account__c == account.Id);
 	}
 
 	@isTest static void testGetMaxDiscountFromList() {
