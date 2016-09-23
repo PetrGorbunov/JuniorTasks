@@ -1,33 +1,34 @@
 @isTest
 private class TestDiscountSupport {
-	
+	private static String promoCode = 'disc1';
+
 	@testSetup static void setup() {
-	        // Create discounts with Discount_Code__c = :promoCode	        
-	        String promoCode = 'disc1';
-			Integer discountNumber = 10;
-			for(Integer i = 1; i <= discountNumber; i++) {
-				Discount__c discount = new Discount__c();
-				discount.Name = 'disc' + i;
-				discount.Discount_Code__c = promoCode;
-				insert discount;
-			}
-
-			// Create one discount record with Discount_Code__c = 'falsePromoCode'
+        // Create discounts with Discount_Code__c = :promoCode	        
+        //String promoCode = 'disc1';
+		Integer discountNumber = 10;
+		for(Integer i = 1; i <= discountNumber; i++) {
 			Discount__c discount = new Discount__c();
-			discount.Name = 'disc';
-			discount.Discount_Code__c = 'falsePromoCode';
+			discount.Name = 'disc' + i;
+			discount.Discount_Code__c = promoCode;
 			insert discount;
+		}
 
-			//Create account		
-			Account account = new Account(Name = 'Acc');
-			insert account;
+		// Create one discount record with Discount_Code__c = 'falsePromoCode'
+		Discount__c discount = new Discount__c();
+		discount.Name = 'disc';
+		discount.Discount_Code__c = 'falsePromoCode';
+		insert discount;
 
-			//Create associate discount with account
-			Discount__c discWithAcc = new Discount__c();
-			discWithAcc.Name = 'discWithAcc';
-			discWithAcc.Account__c = account.Id;
-			insert discWithAcc;
-	    }
+		//Create account		
+		Account account = new Account(Name = 'Acc');
+		insert account;
+
+		//Create associate discount with account
+		Discount__c discWithAcc = new Discount__c();
+		discWithAcc.Name = 'discWithAcc';
+		discWithAcc.Account__c = account.Id;
+		insert discWithAcc;
+    }
 
 	@isTest static void testGetDiscountByCodeNull() {
 		//get discounts list
@@ -40,14 +41,15 @@ private class TestDiscountSupport {
 
 	@isTest static void testGetDiscountByTrueCode() {
 		//get discounts list
-		String promoCode = 'disc1';
+		//String promoCode = 'disc1';
 		List <Discount__c> discounts =  new List <Discount__c>();
 		discounts = DiscountSupport.getDiscountByCode(promoCode);
 
 		//test condition
 		for (Discount__c d : discounts) {
 			System.assert(d.Discount_Code__c == promoCode);
-		}		
+		}
+		//System.assert		
 	}
 
 	@isTest static void testGetDiscountByFalseCode() {
