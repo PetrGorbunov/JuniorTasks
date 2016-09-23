@@ -1,82 +1,76 @@
 trigger InsertNewProductTrigger on Product__c (before insert) {
     
-	//###############################3
-	//Map<Id, Date> dataMap = new Map<Id, Date>();
-	//for (Product__c product : Trigger.new) {
-	//	dataMap.put(product.Id, product.Enter_date__c);
-	//}
-	//StoreSupport.crazyMethod(dataMap);
+		
+	Map<Id, Integer> storesMap = new Map<Id, Integer>();
+	List<Store__c> storesList = new List<Store__c>([SELECT Id,
+											               Name,
+											               Start_period__c,
+											               End_period__c
+										        	FROM Store__c
+										        	WHERE Start_period__c != null AND
+										        	      End_period__c != null]);
+	
+	for (Store__c store : storesList) {
+		storesMap.put(store.Id, 0);
+	}
 
+	List<Product__c> productsListFromDB = new List<Product__c>([SELECT Store__c
+														        FROM Product__c
+														        WHERE Store__c != null]);
 
+	
+	for (Store__c store : storesList) {
+		for (Product__c product : productsListFromDB) {
+			if (store.Id == product.Store__c) {
+				storesMap.put(store.Id, storesMap.get(store.Id) + 1);				
+			}
+		}			
+	}
 
-    //################################2
-    List<Product__c> products = Trigger.new;
-    List<Product__c> productNoStoreId = new List<Product__c>();
-    List<Store__c> stores = new List<Store__c>();
-    try {
-	   stores = [SELECT Id,
-						Name,
-						Start_period__c,
-						End_period__c
-				  FROM Store__c];
-    } catch(Exception e) {
-    	System.debug('stores is empty');
-    }
-
-    List<Store__c> storesForInsert = new List <Store__c>();
-    /**/
-    Store__c storeNull = new Store__c();
-	storeNull.Name = String.valueOf(System.currentTimeMillis());
-    storeNull.Start_period__c = null;
-    storeNull.End_period__c = null;
-    insert storeNull;  
-    /**/
-    //
-    for (Product__c product : Trigger.new) {  
-		if (product.Enter_date__c == null) {
-			product.Store__c = storeNull.Id;
-			continue;
+	List<Store__c> storesForInsert = new List <Store__c>();
+	Integer StoreMaxRecords = 100;
+	for (Product__c product : Trigger.new) { 
+		product.Enter_date__c = System.today();
+		for (Store__c store : storesList) {			
+			if (product.Enter_date__c >= store.Start_period__c && 
+			    product.Enter_date__c <= store.End_period__c &&
+			    storesMap.get(store.Id) < StoreMaxRecords) {
+					product.Store__c = store.Id;
+					storesMap.put(store.Id, storesMap.get(store.Id) + 1);
+			}
 		}
-    	for (Store__c store : stores) {
 
-    		if ((product.Enter_date__c >= store.Start_period__c) && 
-			    (product.Enter_date__c <= store.End_period__c) &&
-				 store.Id != null) {   
-	    			product.Store__c = store.Id;
-	    			break;
-    		}    		
-    	}
-
-    	if (product.Store__c == null) {
-    		Store__c newStore = new Store__c();
+		if (product.Store__c == null) {
+			Store__c newStore = new Store__c();
     		newStore.Name = String.valueOf(System.currentTimeMillis());
             newStore.Start_period__c = product.Enter_date__c;
-            newStore.End_period__c = (product.Enter_date__c == null) ? null : product.Enter_date__c + 1;
-            storesForInsert.add(newStore);
-            stores.add(newStore);            
-    	}
-    }
+            newStore.End_period__c = product.Enter_date__c + 1;
+            
+            
+            newStore.Id = TestUtility.getFakeId(Store__c.SObjectType);//newStore.Name;
+            storesForInsert.add(newStore);            
+            storesList.add(newStore);
+            storesMap.put(newStore.Id, 1);
+            product.Store__c = newStore.Id;
+		}		 
+	}
+	Map<Id,Id> replaceFakeId = new Map<Id, Id>();//initial Map<fakeId,trueId>
+	for(Store__c store : storesForInsert) {
+		replaceFakeId.put(store.Id, null);
+		store.Id = null;
+	}
+	
+	insert storesForInsert;
 
-    if (storesForInsert.size() > 0) {
-    	insert storesForInsert;
-    	for (Product__c product : Trigger.new) {
-    		if (product.Store__c == null) {    			
-    			for (Store__c store : storesForInsert) {
-    				if ((product.Enter_date__c >= store.Start_period__c) && 
-    					(product.Enter_date__c <= store.End_period__c)) {
-    					product.Store__c = store.Id;
-    					break;
-    				}
-    			}
-    		}
-    	}
+	Integer iter = 0;
+	for (Id fakeId : replaceFakeId.keySet()) {
+		replaceFakeId.put(fakeId, storesForInsert.get(iter).Id);
+		iter++;        
     }
-
     
-    //########################################################1
-    //for (Product__c prod : Trigger.new) {
-    //    Store__c store = StoreSupport.getStore(prod.Enter_date__c);        
-    //    prod.Store__c = store.Id;        
-    //}
-   
+    for (Product__c product : Trigger.new) {    	
+    	if (replaceFakeId.get(product.Store__c) != null) {
+    		product.Store__c = replaceFakeId.get(product.Store__c);
+    	}
+    }   
 }
