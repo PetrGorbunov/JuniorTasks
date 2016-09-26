@@ -4,7 +4,7 @@ private class TestInsertNewMaterialTrigger {
 	@isTest static void test_TestInsertNewMaterialTrigger_ManyRecords() {
         //test data
         List <Raw_material__c> materials = new List<Raw_material__c>();
-        Integer materialNum = 3000;               
+        Integer materialNum = 4000;               
         for( Integer i = 1; i < materialNum; i++) {
             Raw_material__c material = new Raw_material__c(Name = 'productName' + i,
                                                           Name__c = 'Name__c');
