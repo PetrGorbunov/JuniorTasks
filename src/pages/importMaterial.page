@@ -1,0 +1,18 @@
+<apex:page controller="ImportMaterialController" >
+	<script type="text/javascript">
+		function showButton() {    
+		    alert("Call came");	
+		    changeFile();		
+		}
+	</script>
+	<apex:pageMessages id="message" />
+	<apex:form id="exportForm">
+		<apex:actionFunction name="changeFile" action="{!changeFile}" reRender="importButton" />
+		<apex:inputFile value="{!inputDocument.value}" filename="{!inputDocument.name}" />
+		<!--
+		<apex:actionSupport action="{!changeFile}" event="onchange" reRender="importButton" />
+		-->
+		<apex:commandButton id="importButton" value="Import Data" action="{!importData}" rendered="true" />
+	</apex:form>
+
+</apex:page>

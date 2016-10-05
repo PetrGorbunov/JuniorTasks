@@ -12,7 +12,7 @@ public class BuyOkController {
     
     
     public BuyOkController() {        
-        ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Hello')); 
+        //ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Hello')); 
         productId = ApexPages.currentPage().getParameters().get('ProductId');
         product = [SELECT Name,
                    		  Cost__c
@@ -34,30 +34,42 @@ public class BuyOkController {
             product.Cost__c = DiscountSupport.calculateCostAfterDiscount(discount, product.Cost__c);
         } catch(Exception e) {
             discount.Percentes_of__c = 0;
-			      discount.Static_discount__c = 0;         
+            discount.Static_discount__c = 0;         
         }
 
+		//if (Schema.SObjectType.User.isFeedEnabled()) {
+  //          sObject fItem = (sObject)System.Type.forName('FeedItem').newInstance();
 
+  //          fItem.put('ParentId', UserInfo.getUserId());    
+
+  //          //fItem.put('ParentId', '0012800000rzyB7AAI');      
+  //          fItem.put('Body' ,'SPARTA!!!');
+  //          ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, UserInfo.getUserId())); 
+  //          insert fItem;
+  //      }
+        
         //sendEmail();
         //ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Start sendEmail')); 
-        Messaging.reserveSingleEmailCapacity(2);
-        Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+
         
-        String[] toAddresses = new String[] {'customuser16092016@gmail.com'};
-        String[] ccAddresses = new String[] {'support@gorbunov-shop-comm-developer-edition.ap2.force.com'};
+        //Messaging.reserveSingleEmailCapacity(2);
+        //Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+        
+        //String[] toAddresses = new String[] {'customuser16092016@gmail.com'};
+        //String[] ccAddresses = new String[] {'support@gorbunov-shop-comm-developer-edition.ap2.force.com'};
 
-        mail.setToAddresses(toAddresses);
-        mail.setCcAddresses(ccAddresses);
+        //mail.setToAddresses(toAddresses);
+        //mail.setCcAddresses(ccAddresses);
 
-        mail.setReplyTo('customuser17092016@gmail.com');
-        mail.setSenderDisplayName('gorbunov-shop-comm-developer-edition.ap2.force.com support');
-        mail.setSubject('You bought new product : ' );
-        mail.setBccSender(false);
-        mail.setUseSignature(false);
-        mail.setPlainTextBody('Your Product: ' +' has been created.'); 
-        mail.setHtmlBody('Your case:<b> ' +' </b>has been created.<p>');
+        //mail.setReplyTo('customuser17092016@gmail.com');
+        //mail.setSenderDisplayName('gorbunov-shop-comm-developer-edition.ap2.force.com support');
+        //mail.setSubject('You bought new product : ' );
+        //mail.setBccSender(false);
+        //mail.setUseSignature(false);
+        //mail.setPlainTextBody('Your Product: ' +' has been created.'); 
+        //mail.setHtmlBody('Your case:<b> ' +' </b>has been created.<p>');
 
-        Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
+        //Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
         
         
     }
@@ -90,5 +102,18 @@ public class BuyOkController {
 
         Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
 
+    }
+
+    public void example() {
+        //if (Schema.SObjectType.User.isFeedEnabled()) {
+        //    sObject fItem = (sObject)System.Type.forName('FeedItem').newInstance();
+
+        //    fItem.put('ParentId', UserInfo.getUserId());    
+
+        //    //fItem.put('ParentId', '0012800000rzyB7AAI');      
+        //    fItem.put('Body' ,'SPARTA!!!');
+        //    ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, UserInfo.getUserId())); 
+        //    //insert fItem;
+        //}
     }
 }

@@ -100,8 +100,17 @@ public class BuyProductController {
         if (discounts.size() > 0) {
             isAutoDiscount = true;
             autoDiscount = DiscountSupport.getMaxDiscountFromList(discounts, product.Cost__c);
-            costBeforeDisc = DiscountSupport.calculateCostAfterDiscount(autoDiscount, product.Cost__c);            
-        	costResult = 'Your primary cost: ' + String.valueOf(costBeforeDisc) + '. Cost for all: ' + String.valueOf(product.Cost__c);
+            costBeforeDisc = DiscountSupport.calculateCostAfterDiscount(autoDiscount, product.Cost__c);
+            /*Long discountTimeMs = (autoDiscount.End_period__c.getTime() - DateTime.now().getTime()); 
+            String days = String.valueOf((discountTimeMs / (1000 * 60 * 60 * 24)).intValue()) + ' days';
+            String hours = String.valueOf((discountTimeMs / (1000 * 60 * 60)).intValue()) + ' hours';
+            String discountTimeString = (discountTimeMs / (1000 * 60 * 60 * 24) > 1) ? days : hours;*/
+			//String discountTime = (DateTime.now() - autoDiscount.End_period__c); 
+			          
+        	costResult = 'Your primary cost: ' + 
+                		 String.valueOf(costBeforeDisc) + 
+                		 '. Cost for all: ' + String.valueOf(product.Cost__c) + 
+                  		 '. Discount end - ' + DiscountSupport.getTimeDiscountEnd(autoDiscount.End_period__c);
         } else {
             isAutoDiscount = false;
             costResult = 'Cost: ' + String.valueOf(product.Cost__c);

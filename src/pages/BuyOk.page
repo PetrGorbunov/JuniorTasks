@@ -1,4 +1,4 @@
-<apex:page controller="BuyOkController" sidebar="false" showheader="false">
+<apex:page controller="BuyOkController" sidebar="false" showheader="false" >
     <apex:composition template="TemplateShop">
         <apex:define name="body">
             <apex:pageMessages id="message"  />
