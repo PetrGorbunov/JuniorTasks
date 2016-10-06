@@ -1,0 +1,38 @@
+<apex:page controller="TemplateShopController">
+
+	<html>
+	<head>
+		
+	
+	<style type="text/css">
+	    .block-template {
+	      background-color:black;
+	      color:white;
+	      padding:20px;
+	      border-radius:20px;
+	      width: 80%;
+	      margin: auto;
+	      text-align: center;
+	      font-size: 200%;  
+	      font-style: italic;    
+	      margin-bottom: 1em;
+	      margin-top: 1em;
+	    }
+	</style>
+	</head>
+	<body>
+	
+	
+	<div style="block-template">
+	    <apex:outputPanel layout="none" rendered="{!isGuest}">
+	        Welcome guest! <a href="{!$Page.CommunitiesLogin}">Log in</a> | <a href="{!$Page.CommunitiesSelfReg}">Register</a>
+	        </apex:outputPanel>
+	        <apex:outputPanel layout="none" rendered="{!NOT(isGuest)}">
+	        Welcome {!$User.FirstName} {!$User.LastName}! <a href="/secur/logout.jsp">Log out</a>
+	    </apex:outputPanel>
+	</div>
+    <apex:insert name="header"/>
+    <apex:insert name="body"/>
+</body>
+</html>
+</apex:page>

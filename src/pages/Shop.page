@@ -1,107 +1,206 @@
-<apex:page controller="ShopController" sidebar="false" showheader="false"  docType="html-5.0" >
-  <script type="text/javascript">
-    function addLinkToDetails() {
-      alert("Start addLinkToDetails()");
-    }    
-  </script>
-  <apex:composition template="TemplateShop">
-      <apex:define name="body">
-          <apex:pageMessages id="message"  />
-          <apex:pageBlock title="Product list" >
+<apex:page controller="ShopController" sidebar="false" showheader="false"  docType="html-5.0" standardStylesheets="false" >
+  <html>
+    <head>
+      <title>Shop</title>
+      <link href="{!URLFOR($Resource.bootStrap, 'bootstrap/css/bootstrap.min.css')}" rel="stylesheet" media="screen"/>
+      <script type="text/javascript">
+        function addLinkToDetails() {
+          alert("Start addLinkToDetails()");
+        }    
+        function doNewSearch() {
+          searchProducts();
+        }
+      </script>
+      <style type="text/css">
+        .block-level {
+          background-color:black;
+          color:white;
+          padding:20px;
+          border-radius:20px;
+          width: 80%;
+          margin: auto;
+          text-align: center;
+          font-size: 200%;  
+          font-style: italic;    
+          margin-bottom: 1em;
+          margin-top: 1em;
+        }
+
+        .block-template {
+          background-color:black;
+          color:white;
+          padding:20px;
+          border-radius:20px;
+          width: 80%;
+          margin: auto;
+          text-align: center;
+          font-size: 200%;  
+          font-style: italic;    
+          margin-bottom: 1em;
+          margin-top: 1em;
+        }
+        .searchInput {
+          border-radius: 10px;
+          color: black;
+          font-size: 120%;
+          background-color: #eec111;
+        }
+        .pageInput {
+          color: black;
+          height: 29px;
+          width: 80px;
+          font-size: 14pt;
+          background-color: #eec111;
+          -webkit-border-radius: 20px;
+          -moz-border-radius: 20px;
+          border-radius: 20px;
+
+        }
+        input:focus {
+          color: black;
+          border: 5px solid darkorange;
+        }
+
+        table {
+          margin: auto;
+          font-size: 12pt;
+          font-style: normal;
+          font-family: Sans-Serif;
+          text-align: left;
+          border-collapse: collapse;
+          border-radius: 5px;
+        }
+        th > div {
+          color:black;
+          margin: all;
+          width: 100%;
+          height: 100%;
+
+        }
+        table.mainTable th {
+          border: 10px;
+          margin: 0px;
+        }
+
+        .emphasize-inset {
+          box-shadow: inset 0 0 7px 4px rgba(255,255,255,.5)
+        }
+
+        .styled-select {       
+           height: 29px;
+           overflow: hidden;
+           width: 80px;
+           -webkit-border-radius: 20px;
+           -moz-border-radius: 20px;
+           border-radius: 20px;
+           background-color: #eec111;
+           font-size: 14pt;
+        }
+        .button-class {
+          background: #eec111;
+          padding: 7px 30px; 
+          font-weight: bold;
+          color: #FFFFFF;
+        }
+      </style>
+    </head>
+    <body>
+      <apex:includeScript value="{!URLFOR($Resource.bootstrap, 'js/bootstrap.min.js')}"/>
+      <apex:composition template="TemplateShop">
+        <apex:define name="body">
+            <apex:pageMessages id="message"  />
+
+            <div class="block-level">
               <apex:form >
-                  <script type="text/javascript">
-                      function doSearch() {
-                        searchServer(document.getElementById("partOfName").value);
-                      }
-                  </script> 
-                  <apex:actionFunction name="searchServer" action="{!searchProduct}" rerender="productBlock,message">
-                      <apex:param name="searchName" value="" />                     
-                  </apex:actionFunction>
-                  <input type="text" id="partOfName" onkeyup="doSearch();"/>                         
-                  
-                  <apex:pageBlockSection id="productBlock" columns="1">
-
-                      <apex:pageBlockTable value="{!products}" var="item" id="tableProduct" >
-                          
-                          <apex:column >
-                              <apex:facet name="header">
-                                {!$Label.Image}
-                              </apex:facet>
-                              <apex:variable var="imageVar" value="{!item.Image__c}"/>
-                              <apex:image url="{!URLFOR($Resource.ImageProduct, imageVar)}" width="50" height="50"/>
-                          </apex:column>
-                                        
-                          <apex:column >
-                              <apex:facet name="header">
-                                <apex:commandLink status="sortTable" value="{!IF((sortField=='Name'), 'Name ' + sortSymbol, 'Name')}" action="{!startSort}" rerender="productBlock">
-                                  <apex:param name="sortField" value="Name" assignTo="{!sortField}"/>
-                                </apex:commandLink>                                  
-                              </apex:facet>
-                              <apex:outputField value="{!item.Name}"  />
-                          </apex:column>
-                          
-                          <apex:column >
-                              <apex:facet name="header">
-                                  {!$Label.Title}
-                              </apex:facet>
-                              <apex:outputField value="{!item.Title__c}"  />
-                          </apex:column>
-                          
-                          <apex:column >
-                              <apex:facet name="header">
-                                  {!$Label.Description}
-                              </apex:facet>
-                              <apex:outputText value="{!IF( (LEN(item.Description__c)>100) , LEFT(item.Description__c, 100), item.Description__c)}">
-                                <apex:param value=">100"/>
-                                <apex:param value="<=100"/>                      	
-                              <!-- '...<a href="/apex/product?Id=' + !item.Id + '">more details</a>' -->
-                              </apex:outputText>
-                              <apex:outputLink value="{!'/apex/product?Id=' & item.Id}" rendered="{!IF( (LEN(item.Description__c)>100) , true, false)}">...more details</apex:outputLink>
-                          </apex:column>
-                          
-                          <apex:column >
-                              <apex:facet name="header">
-                                  <apex:commandLink status="sortTable" value="{!IF((sortField=='Cost__c'), 'Cost ' + sortSymbol, 'Cost')}" action="{!startSort}" rerender="productBlock">
-                                  <apex:param name="sortField" value="Cost__c" assignTo="{!sortField}"/>
-                                </apex:commandLink>   
-                              </apex:facet>
-                              <apex:outputField value="{!item.Cost__c}"  />
-                          </apex:column>
-                          
-                          <apex:column >
-                              <apex:variable var="productUrl" value="/apex/BuyProduct?Id={!item.Id}"/>
-                              <apex:commandLink value="Buy" onclick="window.open('{!productUrl}')" styleClass="btn" style="text-decoration: none;" />
-                          </apex:column>
-                                       
-                      </apex:pageBlockTable>
-
-                      <apex:panelGrid columns="8" >
-                        <apex:selectList value="{!size}" size="1" > 
-                          <apex:selectOptions value="{!productsInPage}" />  
-                          <apex:actionsupport event="onchange" action="{!searchProduct}" rerender="productBlock" status="paginationStatus" />
-                         <!--  <apex:selectOption itemValue="5" itemLabel="5"/>
-                          <apex:selectOption itemValue="10" itemLabel="10"/>
-                          <apex:selectOption itemValue="25" itemLabel="25"/>
-                          <apex:selectOption itemValue="50" itemLabel="50"/>    -->                       
-                          <!-- <apex:selectOptions value="{!productsInPage}"/> -->
-                        </apex:selectList>
-                        <apex:commandButton action="{!firstPage}" status="paginationStatus" reRender="productBlock" value="<<" disabled="{!!setCon.hasPrevious}" title="First Page"/>
-                        <apex:commandButton action="{!previousPage}" status="paginationStatus" reRender="productBlock" value="<" disabled="{!!setCon.hasPrevious}" title="Previous Page"/>
-                        <apex:input value="{!pageNumber}" type="text">
-                          <apex:actionsupport event="onchange" action="{!getPage}" rerender="productBlock" status="paginationStatus" />
-                        </apex:input>
-                        <apex:commandButton action="{!nextPage}" status="paginationStatus" reRender="productBlock" value=">" disabled="{!!setCon.hasNext}" title="Next Page"/>
-                        <apex:commandButton action="{!lastPage}" status="paginationStatus" reRender="productBlock" value=">>" disabled="{!!setCon.hasNext}" title="Last Page"/>
-                        <apex:outputText >{!(setCon.pageNumber * productTableSize)+1-productTableSize}-{!IF((setCon.pageNumber * productTableSize)>noOfRecords, noOfRecords,(setCon.pageNumber * productTableSize))} of {!noOfRecords}</apex:outputText>
-                        <apex:actionStatus id="paginationStatus">
-                          <apex:facet name="start"><img src="/img/loading.gif" alt="" /></apex:facet>
-                          <apex:facet name="stop"></apex:facet>
-                        </apex:actionStatus>
-
-                      </apex:panelGrid>
-                  </apex:pageBlockSection>
+                <apex:outputText >ENTER NAME:</apex:outputText>
+                <apex:inputText value="{!searchProductName}" onkeyup="doNewSearch();" styleClass="searchInput"/> 
+                <apex:actionFunction name="searchProducts" action="{!searchNewProduct}" rerender="productBlock,message,productBlockTable">
+                </apex:actionFunction>
               </apex:form>
-          </apex:pageBlock>
-      </apex:define>
-    </apex:composition>
+            </div>
+
+            <div class="block-level" title="Products list">            
+              <apex:pageBlock id="productBlockTable">
+                <apex:form >  
+                  <apex:pageBlockTable value="{!products}" var="item" id="tableProduct" styleClass="mainTable" >    
+
+                    <apex:column >
+                        <apex:facet name="header">
+                          {!$Label.Image}
+                        </apex:facet>
+                        <apex:variable var="imageVar" value="{!item.Image__c}"/>
+                        <apex:image url="{!URLFOR($Resource.ImageProduct, imageVar)}" width="50" height="50"/>
+                    </apex:column>
+                                          
+                    <apex:column >
+                        <apex:facet name="header">
+                          <apex:commandLink status="sortTable" value="{!IF((sortField=='Name'), 'Name ' + sortSymbol, 'Name')}" action="{!startSort}" rerender="productBlock,productBlockTable">
+                            <apex:param name="sortField" value="Name" assignTo="{!sortField}"/>
+                          </apex:commandLink>                                  
+                        </apex:facet>
+                        <apex:outputField value="{!item.Name}"  />
+                    </apex:column>
+
+                    <apex:column >
+                        <apex:facet name="header">
+                            {!$Label.Title}
+                        </apex:facet>
+                        <apex:outputField value="{!item.Title__c}"  />
+                    </apex:column>
+                            
+                    <apex:column >
+                        <apex:facet name="header">
+                            {!$Label.Description}
+                        </apex:facet>
+                        <apex:outputText value="{!IF( (LEN(item.Description__c)>100) , LEFT(item.Description__c, 100), item.Description__c)}">
+                          <apex:param value=">100"/>
+                          <apex:param value="<=100"/>
+                        </apex:outputText>
+                        <apex:outputLink value="{!'/apex/product?Id=' & item.Id}" rendered="{!IF( (LEN(item.Description__c)>100) , true, false)}">...more details</apex:outputLink>
+                    </apex:column>
+                            
+                    <apex:column >
+                      <apex:facet name="header">
+                          <apex:commandLink status="sortTable" value="{!IF((sortField=='Cost__c'), 'Cost ' + sortSymbol, 'Cost')}" action="{!startSort}" rerender="productBlock,productBlockTable">
+                          <apex:param name="sortField" value="Cost__c" assignTo="{!sortField}"/>
+                        </apex:commandLink>   
+                      </apex:facet>
+                      <apex:outputField value="{!item.Cost__c}"  />
+                    </apex:column>
+                            
+                    <apex:column >
+                      <apex:variable var="productUrl" value="/apex/BuyProduct?Id={!item.Id}"/>
+                      <apex:commandLink value="Buy" onclick="window.open('{!productUrl}')" styleClass="btn" style="text-decoration: none;" />
+                    </apex:column>
+                                         
+                  </apex:pageBlockTable>
+                </apex:form>
+              </apex:pageBlock>
+            </div>
+
+            <div class="block-level">
+              <apex:form id="productBlock" >
+                <apex:selectList value="{!size}" size="1" styleClass="styled-select" > 
+                  <apex:selectOptions value="{!productsInPage}" />  
+                  <apex:actionsupport event="onchange" action="{!searchNewProduct}" rerender="productBlock,productBlockTable" status="paginationStatus" />                        
+                </apex:selectList>
+                <apex:commandButton action="{!firstPage}" status="paginationStatus" reRender="productBlock,productBlockTable" value="<<" disabled="{!!setCon.hasPrevious}" title="First Page" styleClass="button-class"/>
+                <apex:commandButton action="{!previousPage}" status="paginationStatus" reRender="productBlock,productBlockTable" value="<" disabled="{!!setCon.hasPrevious}" title="Previous Page"/>
+                <apex:input value="{!pageNumber}" type="text"  styleClass="pageInput" >
+                  <apex:actionsupport event="onchange" action="{!getPage}" rerender="productBlock,productBlockTable" status="paginationStatus" />
+                </apex:input>
+                <apex:commandButton action="{!nextPage}" status="paginationStatus" reRender="productBlock,productBlockTable" value=">" disabled="{!!setCon.hasNext}" title="Next Page" styleClass="button-class"/>
+                <apex:commandButton action="{!lastPage}" status="paginationStatus" reRender="productBlock,productBlockTable" value=">>" disabled="{!!setCon.hasNext}" title="Last Page"/>
+                <apex:outputText >{!(setCon.pageNumber * productTableSize)+1-productTableSize}-{!IF((setCon.pageNumber * productTableSize)>noOfRecords, noOfRecords,(setCon.pageNumber * productTableSize))} of {!noOfRecords}</apex:outputText>
+                <apex:actionStatus id="paginationStatus">
+                <apex:facet name="start"><img src="/img/loading.gif" alt="" /></apex:facet>
+                <apex:facet name="stop"></apex:facet>
+              </apex:actionStatus>
+            </apex:form>
+          </div>
+
+        </apex:define>
+      </apex:composition>
+    </body>
+  </html>
 </apex:page>
